@@ -1,7 +1,7 @@
 /*
     Author: LegendLee(legendlee1314@gmail.com)
     Date: 2013-07-19
-    Last Modified Date: 2013-07-19
+    Last Modified Date: 2013-07-22
     Module: Perf_Test
     Description:
         API Performance Test
@@ -32,7 +32,7 @@ function goal_test_function(data){
 
 // test data generate
 function data_generate(){
-    var p_str = document.getElementsByTagName("p");
+    var p_str = document.getElementById("case");
     if(p_str != null){
         return p_str;
     }
