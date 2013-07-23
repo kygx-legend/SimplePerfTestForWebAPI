@@ -23,7 +23,7 @@ function get_data_unit(){
     var input = document.getElementById("scale");
     if(p != null && input != null){
         var content = p.innerHTML;
-        var scale = input.value;
+        var scale = parseInt(input.value);
         var case_str = new String();
         for(var i=0; i<scale; i++){
             case_str += content;
@@ -113,40 +113,54 @@ function perf_test(xwalk_object, data){
 }
 
 // visualization
-function visualize(result){
-    if(result != null){
-        var canvas = document.getElementById("myCanvas");
-        var context = canvas.getContext("2d");
-        var k = 20;
-        context.clearRect(0, 0, canvas.width, canvas.height);
-        context.lineWidth = 4;
-        context.beginPath();
-        context.moveTo(0, 0);
-        for(x in result){
-            context.lineTo(k, result[x].midtime - result[x].starttime);
-            k += 10;
+function visualize(times, method){
+    if(times != null){
+        var container = document.getElementById("result");
+        var scale = document.getElementById("scale");
+        var variable = document.getElementById('variable');
+        var data_set = [], data_get = [];
+        if(method == 'linear'){
+            var s = parseInt(scale.value);
+            var k = parseInt(variable.value);
+            for(x in times){
+                ds = [s+k, (times[x].midtime-times[x].starttime)/1000];
+                dg = [s+k, (times[x].endtime-times[x].midtime)/1000];
+                data_set.push(ds);
+                data_get.push(dg);
+                s += k;
+            }
         }
-        context.strokeStyle = '#ff0000';
-        context.stroke();
-        context.closePath();
-        context.beginPath();
-        var k = 20;
-        context.moveTo(0, 0);
-        for(x in result){
-            context.lineTo(k, result[x].endtime - result[x].midtime);
-            k += 10;
+        else{
+            var s = parseInt(scale.value);
+            var pow = parseInt(variable.value);
+            s = s * pow
+            for(x in times){
+                ds = [s+s, (times[x].midtime-times[x].starttime)/1000];
+                dg = [s+s, (times[x].endtime-times[x].midtime)/1000];
+                data_set.push(ds);
+                data_get.push(dg);
+                s += s;
+            }
         }
-        context.strokeStyle = '#0000ff';
-        context.stroke();
-        context.closePath();
-    } }
+        Flotr.draw(container, [
+                  { data: data_set, label: 'set',
+                    points: {show: true}, lines: {show: true}},
+                  { data: data_get, label: 'get',
+                    points: {show: true}, lines: {show: true}},
+                  ], {
+                    xaxis: {
+                        minorTickFreq: 4
+                    } 
+                  });
+    }
+}
 
 // main loop of `perf_test`
 function perf_test_main(){
     var input = document.getElementById('method');
     var method = input.value;
     var input = document.getElementById('number');
-    var number = input.value;
+    var number = parseInt(input.value);
     var result = new Array();
     
     var xwalk_test_object = new xwalk_test_goal();
@@ -155,7 +169,7 @@ function perf_test_main(){
         var data = get_data_unit();
         var k = document.getElementById('variable').value;
         var add = new String();
-        for(var i=0; i<k; i++){
+        for(var i=0; i<parseInt(k); i++){
             add += data;
         }
         for(var i=1; i<number; i++){
@@ -168,7 +182,7 @@ function perf_test_main(){
         var unit = get_data_unit();
         var pow = document.getElementById('variable').value;
         var data = new String();
-        for(var i=0; i<pow; i++){
+        for(var i=0; i<parseInt(pow); i++){
             data += unit;
         }
         for(var i=1; i<number; i++){
@@ -177,7 +191,7 @@ function perf_test_main(){
             result.push(time);
         }
     }
-    visualize(result);
+    visualize(result, method);
 }
 
 // call main function

@@ -49,14 +49,13 @@
                     },
                     "h5": "Test Case Scale"
                 },{
-                    "class": "result",
-                    "canvas": {
-                        "id": "myCanvas",
-                        "width": "400",
-                        "height": "300"
-                    }
+                    "id": "result",
+                    "text": ""
                 }]
-            }
+            },
+            "script": [
+                { "src": "js/flotr2.min.js" }
+            ]
         }
     }
 }
