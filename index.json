@@ -1,0 +1,44 @@
+{
+    "html5": true,
+    "html": {
+        "head": {
+            "css": [
+                { "href": "css/perf_test.css" }
+            ],
+            "script": [
+                { "src": "js/perf_test.js" }
+            ],
+            "title": "Performance Test Index",
+            "meta": {
+                "charset": "utf-8"
+            }
+        },
+        "body": {
+            "div": {
+                "class": "main",
+                "div": [{
+                    "class": "title",
+                    "h2": "Performance Test Index"
+                },{
+                    "class": "description",
+                    "p": {
+                        "class": "case",
+                        "text": null
+                    },
+                    "h5": "Test Cases"
+                },{
+                    "class": "result",
+                    "button": {
+                        "id": "testBtn",
+                        "text": "Test"
+                    },
+                    "canvas": {
+                        "id": "myCanvas",
+                        "width": "400",
+                        "height": "300"
+                    }
+                }]
+            }
+        }
+    }
+}
