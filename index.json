@@ -29,8 +29,19 @@
                     "input": [{
                         "type": "text",
                         "id": "scale",
-                        "placeholder": "scale",
                         "value": "1"
+                    },{
+                        "type": "text",
+                        "id": "number",
+                        "value": "10"
+                    },{
+                        "type": "text",
+                        "id": "method",
+                        "value": "linear"
+                    },{
+                        "type": "text",
+                        "id": "variable",
+                        "value": "2"
                     }],
                     "button": {
                         "id": "testBtn",

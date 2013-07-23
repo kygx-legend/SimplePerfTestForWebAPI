@@ -18,13 +18,13 @@
    */
 
 // test data generate
-function data_generate(){
+function get_data_unit(){
     var p = document.getElementById("content");
     var input = document.getElementById("scale");
     if(p != null && input != null){
         var content = p.innerHTML;
         var scale = input.value;
-        var case_str = '';
+        var case_str = new String();
         for(var i=0; i<scale; i++){
             case_str += content;
         }
@@ -39,19 +39,34 @@ function xwalk_test_goal(goal){
         this.bubble_sort(data);
     }
     this.get_property = function get_property(data){
-        this.quick_sort(data);
+        this.quick_sort(data); 
+        return this.data;
     }
     this.quick_sort = function quick_sort(data){
         this.data = data.split('');
-        this.quick_sort_main(this.data);
+        this.quick_sort_main(this.data, 0, this.data.length);
     }
     this.quick_sort_main = function quick_sort_main(data, left, right){
-        if(left >= right){
-            return ;
+        var stack1 = new Array();
+        var stack2 = new Array();
+        var mid = this.partition(data, left, right);
+        stack1.push(left);
+        stack2.push(mid - 1);
+        stack1.push(mid + 1);
+        stack2.push(right);
+        while(stack1.length != 0 || stack2.length != 0){
+            var left=stack1.pop();
+            var right=stack2.pop();
+            var mid = this.partition(data, left, right);
+            if(left < mid - 1){
+                stack1.push(left);
+                stack2.push(mid - 1);
+            }
+            if(mid + 1 < right){
+                stack1.push(mid + 1);
+                stack2.push(right);
+            }
         }
-        var index = this.partition(data, left, right);
-        this.quick_sort_main(data, left, index-1);
-        this.quick_sort_main(data, index+1, right);
     }
     this.partition = function partition(data, left, right){
         var index = left;
@@ -81,12 +96,16 @@ function xwalk_test_goal(goal){
 }
 
 // pert test for different API
-function perf_test(api_function, data){
+function perf_test(xwalk_object, data){
     var time = new Object();
     time.starttime = new Date().getTime();
-    api_function(data);
+
+    xwalk_object.set_property(data);
+
     time.midtime = new Date().getTime();
-    var newdata = api_function.data;
+
+    var newdata = xwalk_object.get_property(data);
+
     time.endtime = new Date().getTime();
     //@todo
     //validate(data, newdata);
@@ -120,25 +139,45 @@ function visualize(result){
         context.strokeStyle = '#0000ff';
         context.stroke();
         context.closePath();
-    }
-}
+    } }
 
 // main loop of `perf_test`
 function perf_test_main(){
-    var data = data_generate();
+    var input = document.getElementById('method');
+    var method = input.value;
+    var input = document.getElementById('number');
+    var number = input.value;
     var result = new Array();
-    var test = new xwalk_test_goal('t');
-    test.set_property(data);
-    alert(test.data);
-    test.get_property(data);
-    alert(test.data);
-    /*
-    for(d in data){
-        time = perf_test(goal_test_function, d);
-        result.push(time);
+    
+    var xwalk_test_object = new xwalk_test_goal();
+
+    if(method == 'linear'){
+        var data = get_data_unit();
+        var k = document.getElementById('variable').value;
+        var add = new String();
+        for(var i=0; i<k; i++){
+            add += data;
+        }
+        for(var i=1; i<number; i++){
+            data += add; 
+            time = perf_test(xwalk_test_object, data);
+            result.push(time);
+        }
+    }
+    else{
+        var unit = get_data_unit();
+        var pow = document.getElementById('variable').value;
+        var data = new String();
+        for(var i=0; i<pow; i++){
+            data += unit;
+        }
+        for(var i=1; i<number; i++){
+            data += data; 
+            time = perf_test(xwalk_test_object, data);
+            result.push(time);
+        }
     }
     visualize(result);
-    */
 }
 
 // call main function
