@@ -1,7 +1,7 @@
 /*
     Author: LegendLee(legendlee1314@gmail.com)
     Date: 2013-07-19
-    Last Modified Date: 2013-07-22
+    Last Modified Date: 2013-07-23
     Module: Perf_Test
     Description:
         API Performance Test
@@ -17,24 +17,66 @@
             by one large string or one string array with more small strings.
    */
 
-// goal test function
-function goal_test_function(data){
-    this.data = data;
-    this.loop = 10000;
-    for(var i = 0; i < parseInt(Math.random() * loop); i++){
-        for(var j = 0; j < parseInt(Math.random() * loop); j++){
-            for(var k = 0; k < parseInt(Math.random() * loop); k++){
-                var a = 1;
-            }
+// test data generate
+function data_generate(){
+    var p = document.getElementById("content");
+    var input = document.getElementById("scale");
+    if(p != null && input != null){
+        var content = p.innerHTML;
+        var scale = input.value;
+        var case_str = '';
+        for(var i=0; i<scale; i++){
+            case_str += content;
         }
+        return case_str;
     }
 }
 
-// test data generate
-function data_generate(){
-    var p_str = document.getElementById("case");
-    if(p_str != null){
-        return p_str;
+// xwalk test goal
+function xwalk_test_goal(goal){
+    this.goal = goal;
+    this.set_property = function set_property(data){
+        this.bubble_sort(data);
+    }
+    this.get_property = function get_property(data){
+        this.quick_sort(data);
+    }
+    this.quick_sort = function quick_sort(data){
+        this.data = data.split('');
+        this.quick_sort_main(this.data);
+    }
+    this.quick_sort_main = function quick_sort_main(data, left, right){
+        if(left >= right){
+            return ;
+        }
+        var index = this.partition(data, left, right);
+        this.quick_sort_main(data, left, index-1);
+        this.quick_sort_main(data, index+1, right);
+    }
+    this.partition = function partition(data, left, right){
+        var index = left;
+        var pivot = data[index];
+        for(var i=left; i<right; i++){
+            if(data[i] < pivot){
+                var tmp = data[index];
+                data[index] = data[i];
+                data[i] = tmp;
+                index++;
+            }
+        }
+        return index;
+    }
+    this.bubble_sort = function bubble_sort(data){
+        this.data = data.split('');
+        for(var i=0; i<this.data.length; i++){
+            for(var j=0; j<this.data.length-i-1; j++){
+                if(this.data[j] > this.data[j+1]){
+                    var tmp = this.data[j];
+                    this.data[j] = this.data[j+1];
+                    this.data[j+1] = tmp;
+                }
+            }
+        }
     }
 }
 
@@ -85,11 +127,18 @@ function visualize(result){
 function perf_test_main(){
     var data = data_generate();
     var result = new Array();
+    var test = new xwalk_test_goal('t');
+    test.set_property(data);
+    alert(test.data);
+    test.get_property(data);
+    alert(test.data);
+    /*
     for(d in data){
         time = perf_test(goal_test_function, d);
         result.push(time);
     }
     visualize(result);
+    */
 }
 
 // call main function

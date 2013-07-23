@@ -22,16 +22,23 @@
                 },{
                     "class": "description",
                     "p": {
+                        "id": "content",
                         "class": "case",
                         "text": null
                     },
-                    "h5": "Test Cases"
-                },{
-                    "class": "result",
+                    "input": [{
+                        "type": "text",
+                        "id": "scale",
+                        "placeholder": "scale",
+                        "value": "1"
+                    }],
                     "button": {
                         "id": "testBtn",
                         "text": "Test"
                     },
+                    "h5": "Test Case Scale"
+                },{
+                    "class": "result",
                     "canvas": {
                         "id": "myCanvas",
                         "width": "400",

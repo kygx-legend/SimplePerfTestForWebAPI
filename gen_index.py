@@ -19,7 +19,8 @@ scale = {'k': 1, 'm': 2, 'g': 3}
 rand = lambda x: chr(97 + randint(0, 25))
 
 # attributes sets
-attr = ('id', 'class', 'charset', 'width', 'height')
+attr = ('id', 'class', 'charset', 'width', 'height') + \
+       ('type', 'placeholder', 'value')
 
 # write out to `intex.html`
 index_html = open('index.html', 'w')
