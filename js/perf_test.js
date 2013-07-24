@@ -4,7 +4,7 @@ Date: 2013-07-19
 Last Modified Date: 2013-07-24
 Module: Perf_Test
 Description:
-    API Performance Test
+    API Object Performance Test
     1. To generate test strings arrays and ints arrays with linear length.
     2. To test one function of API by loading generated parameters.
         There are two subtasks:
@@ -13,40 +13,26 @@ Description:
         c) * More in depth, make the above visualization.
     3. Two main test tasks:
         one time for large data; more times for small data;
-    4. Test object are `set_property` and `get_property`. \
+    4. Test object are `setProperty` and `getProperty`. \
         by one large string or one string array with more small strings.
 */
 
-// test data generate
-function get_data_unit(){
-    var p = document.getElementById("content");
-    var input = document.getElementById("scale");
-    if(p != null && input != null){
-        var content = p.innerHTML;
-        var scale = parseInt(input.value);
-        var case_str = new String();
-        for(var i=0; i<scale; i++){
-            case_str += content;
-        }
-        return case_str;
-    }
-}
 
 // xwalk test goal
-function xwalk_test_goal(goal){
+function XWalkTestGoal(goal){
     this.goal = goal;
-    this.set_property = function set_property(data){
-        this.bubble_sort(data);
+    this.setProperty = function setProperty(data){
+        this.bubbleSort(data);
     }
-    this.get_property = function get_property(data){
-        this.quick_sort(data); 
+    this.getProperty = function getProperty(data){
+        this.quickSort(data); 
         return this.data;
     }
-    this.quick_sort = function quick_sort(data){
+    this.quickSort = function quickSort(data){
         this.data = data.split('');
-        this.quick_sort_main(this.data, 0, this.data.length);
+        this.quickSort_main(this.data, 0, this.data.length);
     }
-    this.quick_sort_main = function quick_sort_main(data, left, right){
+    this.quickSort_main = function quickSort_main(data, left, right){
         var stack1 = new Array();
         var stack2 = new Array();
         var mid = this.partition(data, left, right);
@@ -81,7 +67,7 @@ function xwalk_test_goal(goal){
         }
         return index;
     }
-    this.bubble_sort = function bubble_sort(data){
+    this.bubbleSort = function bubbleSort(data){
         this.data = data.split('');
         for(var i=0; i<this.data.length; i++){
             for(var j=0; j<this.data.length-i-1; j++){
@@ -95,19 +81,34 @@ function xwalk_test_goal(goal){
     }
 }
 
+// test data generate
+function get_data_unit(){
+    var p = document.getElementById("content");
+    var input = document.getElementById("scale");
+    if(p != null && input != null){
+        var content = p.innerHTML;
+        var scale = parseInt(input.value);
+        var case_str = new String();
+        for(var i=0; i<scale; i++){
+            case_str += content;
+        }
+        return case_str;
+    }
+}
+
 // pert test for different API
 function perf_test(xwalk_object, data){
     // object time to set up three kinds
     var time = new Object();
     time.starttime = new Date().getTime();
     
-    // test set_property
-    xwalk_object.set_property(data);
+    // test setProperty
+    xwalk_object.setProperty(data);
 
     time.midtime = new Date().getTime();
 
-    // test get_property
-    var newdata = xwalk_object.get_property(data);
+    // test getProperty
+    var newdata = xwalk_object.getProperty(data);
 
     time.endtime = new Date().getTime();
 
@@ -192,7 +193,7 @@ function visualize(times, method){
     }
 }
 
-// main loop of `perf_test`
+// main function of `perf_test`
 function perf_test_main(){
     var input = document.getElementById('method');
     var method = input.value;
@@ -201,7 +202,7 @@ function perf_test_main(){
     var times = new Array();// record the running time
 
     // new one object of test goal of xwalk
-    var xwalk_test_object = new xwalk_test_goal();
+    var xwalk_test_object = new XWalkTestGoal('t');
 
     // test for linear
     // y = k * x + x for n cases 
