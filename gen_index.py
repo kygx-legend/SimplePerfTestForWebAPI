@@ -10,11 +10,10 @@
 
 from random import randint
 import codecs
-import traceback
-import getopt
-import json
 
+import json
 from xml.dom.minidom import Document
+
 
 # scale configure
 length = 1 # for 1k
@@ -22,7 +21,7 @@ unit = 1024
 scale = 'k'
 space = {'k': 1, 'm': 2, 'g': 3}
 
-# lambda random function
+# lambda random function, get char between a-z
 rand = lambda x: chr(97 + randint(0, 25))
 
 # attributes sets
@@ -53,14 +52,16 @@ def parse_element(doc, root, j):
     if isinstance(j, dict):
         for key in j.keys():
             value = j[key]
+            # for a list
             if isinstance(value, list):
-                # for a list
+                # special css tag
                 if key == 'css':
                     for e in value:
                         elem = doc.createElement('link')
                         elem.setAttribute('href', e['href'])
                         elem.setAttribute('rel', 'stylesheet')
                         root.appendChild(elem)
+                # special script tag
                 elif key == 'script':
                     for e in value:
                         elem = doc.createElement(key)
