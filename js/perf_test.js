@@ -18,20 +18,20 @@ Description:
 */
 
 
-// xwalk test goal
+// xwalk test goal example
 function XWalkTestGoal(goal){
     this.goal = goal;
     this.setProperty = function setProperty(data){
         this.bubbleSort(data);
-    }
+    };
     this.getProperty = function getProperty(data){
         this.quickSort(data); 
         return this.data;
-    }
+    };
     this.quickSort = function quickSort(data){
         this.data = data.split('');
         this.quickSort_main(this.data, 0, this.data.length);
-    }
+    };
     this.quickSort_main = function quickSort_main(data, left, right){
         var stack1 = new Array();
         var stack2 = new Array();
@@ -53,7 +53,7 @@ function XWalkTestGoal(goal){
                 stack2.push(right);
             }
         }
-    }
+    };
     this.partition = function partition(data, left, right){
         var index = left;
         var pivot = data[index];
@@ -66,7 +66,7 @@ function XWalkTestGoal(goal){
             }
         }
         return index;
-    }
+    };
     this.bubbleSort = function bubbleSort(data){
         this.data = data.split('');
         for(var i=0; i<this.data.length; i++){
@@ -78,7 +78,7 @@ function XWalkTestGoal(goal){
                 }
             }
         }
-    }
+    };
 }
 
 // test data generate
@@ -100,17 +100,17 @@ function get_data_unit(){
 function perf_test(xwalk_object, data){
     // object time to set up three kinds
     var time = new Object();
-    time.starttime = new Date().getTime();
+    time.start = new Date().getTime();
     
     // test setProperty
     xwalk_object.setProperty(data);
 
-    time.midtime = new Date().getTime();
+    time.mid = new Date().getTime();
 
     // test getProperty
     var newdata = xwalk_object.getProperty(data);
 
-    time.endtime = new Date().getTime();
+    time.end = new Date().getTime();
 
     //@todo
     //validate(data, newdata);
@@ -130,8 +130,8 @@ function visualize(times, method){
             var s = parseInt(scale.value);
             var k = parseInt(variable.value);
             for(x in times){
-                st = (times[x].midtime-times[x].starttime)/1000;
-                et = (times[x].endtime-times[x].midtime)/1000;
+                var st = (times[x].mid-times[x].start)/1000;
+                var et = (times[x].end-times[x].mid)/1000;
                 var ds = [s+k, st], dg = [s+k, et];
                 var ts = [x, st], tg = [x, et];
                 data_set.push(ds);
@@ -146,8 +146,8 @@ function visualize(times, method){
             var pow = parseInt(variable.value);
             s = s * pow
             for(x in times){
-                st = (times[x].midtime-times[x].starttime)/1000;
-                et = (times[x].endtime-times[x].midtime)/1000;
+                var st = (times[x].mid-times[x].start)/1000;
+                var et = (times[x].end-times[x].mid)/1000;
                 var ds = [s+s, st], dg = [s+s, et];
                 var ts = [x, st], tg = [x, et];
                 data_set.push(ds);
