@@ -21,36 +21,61 @@
                     "h2": "Performance Test Index"
                 },{
                     "class": "description",
-                    "p": {
+                    "p": [{
+                        "class": "case",
+                        "text": "space"
+                    },{
                         "id": "content",
                         "class": "case",
                         "text": null
-                    },
-                    "input": [{
-                        "type": "text",
-                        "id": "scale",
-                        "value": "1"
+                    }],
+                    "div": [{
+                        "input": {
+                            "type": "text",
+                            "id": "scale",
+                            "value": "1"
+                        },
+                        "text": "case = unit * scale"
                     },{
-                        "type": "text",
-                        "id": "number",
-                        "value": "10"
+                        "input": {
+                            "type": "text",
+                            "id": "number",
+                            "value": "10"
+                        },
+                        "text": "cases number:"
                     },{
-                        "type": "text",
-                        "id": "method",
-                        "value": "linear"
+                        "input": {
+                            "type": "text",
+                            "id": "method",
+                            "value": "linear"
+                        },
+                        "text": "test methods: "
                     },{
-                        "type": "text",
-                        "id": "variable",
-                        "value": "2"
+                        "input": {
+                            "type": "text",
+                            "id": "variable",
+                            "value": "2"
+                        },
+                        "text": "if linear: v=k, else: v=p(integer)"
+                    },{
+                        "text": "Model: y = k*x + x / pow(p*x, 2) for n cases"
                     }],
                     "button": {
                         "id": "testBtn",
                         "text": "Test"
                     },
-                    "h5": "Test Case Scale"
+                    "h5": "Test Result Diagram:"
                 },{
-                    "id": "result",
-                    "text": ""
+                    "div": {
+                        "class": "resutl",
+                        "div": [{
+                            "id": "result1",
+                            "text": ""
+                        },{
+                            "id": "result2",
+                            "text": ""
+                        }]
+                    }
                 }]
             },
             "script": [

@@ -1,21 +1,21 @@
 /*
-    Author: LegendLee(legendlee1314@gmail.com)
-    Date: 2013-07-19
-    Last Modified Date: 2013-07-23
-    Module: Perf_Test
-    Description:
-        API Performance Test
-        1. To generate test strings arrays and ints arrays with linear length.
-        2. To test one function of API by loading generated parameters.
-            There are two subtasks:
-            a) Get the time of writing and reading to show the speed performance.
-            b) Test and verify the integrity and accuracy.
-            c) * More in depth, make the above visualization.
-        3. Two main test tasks:
-            one time for large data; more times for small data;
-        4. Test object are `set_property` and `get_property`. \
-            by one large string or one string array with more small strings.
-   */
+Author: LegendLee(legendlee1314@gmail.com)
+Date: 2013-07-19
+Last Modified Date: 2013-07-24
+Module: Perf_Test
+Description:
+    API Performance Test
+    1. To generate test strings arrays and ints arrays with linear length.
+    2. To test one function of API by loading generated parameters.
+        There are two subtasks:
+        a) Get the time of writing and reading to show the speed performance.
+        b) Test and verify the integrity and accuracy.
+        c) * More in depth, make the above visualization.
+    3. Two main test tasks:
+        one time for large data; more times for small data;
+    4. Test object are `set_property` and `get_property`. \
+        by one large string or one string array with more small strings.
+*/
 
 // test data generate
 function get_data_unit(){
@@ -97,16 +97,20 @@ function xwalk_test_goal(goal){
 
 // pert test for different API
 function perf_test(xwalk_object, data){
+    // object time to set up three kinds
     var time = new Object();
     time.starttime = new Date().getTime();
-
+    
+    // test set_property
     xwalk_object.set_property(data);
 
     time.midtime = new Date().getTime();
 
+    // test get_property
     var newdata = xwalk_object.get_property(data);
 
     time.endtime = new Date().getTime();
+
     //@todo
     //validate(data, newdata);
     return time
@@ -115,18 +119,24 @@ function perf_test(xwalk_object, data){
 // visualization
 function visualize(times, method){
     if(times != null){
-        var container = document.getElementById("result");
+        var container1 = document.getElementById("result1");
+        var container2 = document.getElementById("result2");
         var scale = document.getElementById("scale");
         var variable = document.getElementById('variable');
         var data_set = [], data_get = [];
+        var time_set = [], time_get = [];
         if(method == 'linear'){
             var s = parseInt(scale.value);
             var k = parseInt(variable.value);
             for(x in times){
-                ds = [s+k, (times[x].midtime-times[x].starttime)/1000];
-                dg = [s+k, (times[x].endtime-times[x].midtime)/1000];
+                st = (times[x].midtime-times[x].starttime)/1000;
+                et = (times[x].endtime-times[x].midtime)/1000;
+                var ds = [s+k, st], dg = [s+k, et];
+                var ts = [x, st], tg = [x, et];
                 data_set.push(ds);
                 data_get.push(dg);
+                time_set.push(ts);
+                time_get.push(tg);
                 s += k;
             }
         }
@@ -135,22 +145,49 @@ function visualize(times, method){
             var pow = parseInt(variable.value);
             s = s * pow
             for(x in times){
-                ds = [s+s, (times[x].midtime-times[x].starttime)/1000];
-                dg = [s+s, (times[x].endtime-times[x].midtime)/1000];
+                st = (times[x].midtime-times[x].starttime)/1000;
+                et = (times[x].endtime-times[x].midtime)/1000;
+                var ds = [s+s, st], dg = [s+s, et];
+                var ts = [x, st], tg = [x, et];
                 data_set.push(ds);
                 data_get.push(dg);
+                time_set.push(ts);
+                time_get.push(tg);
                 s += s;
             }
         }
-        Flotr.draw(container, [
+        // draw diagram with Flotr
+        // scale-time diagram
+        Flotr.draw(container1, [
                   { data: data_set, label: 'set',
                     points: {show: true}, lines: {show: true}},
                   { data: data_get, label: 'get',
                     points: {show: true}, lines: {show: true}},
                   ], {
+                    title: "Test Result",
+                    subtitle: "Scale - Time Diagram",
                     xaxis: {
-                        minorTickFreq: 4
-                    } 
+                        title: "case scale"
+                    },
+                    yaxis: {
+                        title: "run time"
+                    }
+                  });
+        // times-time diagram
+        Flotr.draw(container2, [
+                  { data: time_set, label: 'set',
+                    points: {show: true}, lines: {show: true}},
+                  { data: time_get, label: 'get',
+                    points: {show: true}, lines: {show: true}},
+                  ], {
+                    title: "Test Result",
+                    subtitle: "Times - Time Diagram",
+                    xaxis: {
+                        title: "times"
+                    },
+                    yaxis: {
+                        title: "run time"
+                    }
                   });
     }
 }
@@ -161,10 +198,13 @@ function perf_test_main(){
     var method = input.value;
     var input = document.getElementById('number');
     var number = parseInt(input.value);
-    var result = new Array();
-    
+    var times = new Array();// record the running time
+
+    // new one object of test goal of xwalk
     var xwalk_test_object = new xwalk_test_goal();
 
+    // test for linear
+    // y = k * x + x for n cases 
     if(method == 'linear'){
         var data = get_data_unit();
         var k = document.getElementById('variable').value;
@@ -172,26 +212,31 @@ function perf_test_main(){
         for(var i=0; i<parseInt(k); i++){
             add += data;
         }
-        for(var i=1; i<number; i++){
-            data += add; 
+        for(var i=0; i<number; i++){
             time = perf_test(xwalk_test_object, data);
-            result.push(time);
+            times.push(time);
+            // link linearly
+            data += add; 
         }
     }
+    // test for non-linear
+    // y = pow(p * x, 2) for n cases
     else{
         var unit = get_data_unit();
-        var pow = document.getElementById('variable').value;
+        var p = document.getElementById('variable').value;
         var data = new String();
-        for(var i=0; i<parseInt(pow); i++){
+        for(var i=0; i<parseInt(p); i++){
             data += unit;
         }
-        for(var i=1; i<number; i++){
-            data += data; 
+        for(var i=0; i<number; i++){
             time = perf_test(xwalk_test_object, data);
-            result.push(time);
+            times.push(time);
+            // link non-linearly
+            data += data; 
         }
     }
-    visualize(result, method);
+    // visualize the result after testing
+    visualize(times, method);
 }
 
 // call main function

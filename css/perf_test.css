@@ -6,12 +6,11 @@ body    {
 }
 
 div     {
-    position: relative;
 }
 
 .main   {
     margin: 0 auto;
-    width: 1000px;
+    width: 1100px;
     height: 600px;
 }
 
@@ -19,7 +18,17 @@ div     {
     overflow: auto;
 }
 
-#result {
-    width: 600px;
-    height: 400px;
+.result {
+    position: relative;
+}
+
+#result1 {
+    float: left;
+    width: 500px;
+    height: 380px;
+}
+#result2 {
+    float: right;
+    width: 500px;
+    height: 380px;
 }

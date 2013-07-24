@@ -1,7 +1,13 @@
 # coding=utf8
 # author: LegendLee
 # module: Generate Index Page
-# description: using json to write `index.html`
+# description: using `index.json` to write `index.html`
+# usage:
+#   1. Modify the file named `index.json`.
+#   2. The format must follow json.
+#   3. Configure the test case unit scale.
+#   4. By varibles: length, unit, scale.
+
 from random import randint
 import codecs
 import traceback
@@ -13,7 +19,8 @@ from xml.dom.minidom import Document
 # scale configure
 length = 1 # for 1k
 unit = 1024
-scale = {'k': 1, 'm': 2, 'g': 3}
+scale = 'k'
+space = {'k': 1, 'm': 2, 'g': 3}
 
 # lambda random function
 rand = lambda x: chr(97 + randint(0, 25))
@@ -32,18 +39,22 @@ data = json.load(codecs.open('index.json'))
 # generate fixed scale text
 def gen_rand():
     """
-        return text with length * 1024 chars
+        return text with length * unit chars
     """
-    block = length * pow(unit, scale['k'])
+    block = length * pow(unit, space[scale])
     p_str = ''.join(map(rand, range(block)))
     return p_str
 
 # parse one element with special method
 def parse_element(doc, root, j):
+    """
+        recursion of parsing like dps.
+    """
     if isinstance(j, dict):
         for key in j.keys():
             value = j[key]
             if isinstance(value, list):
+                # for a list
                 if key == 'css':
                     for e in value:
                         elem = doc.createElement('link')
@@ -58,33 +69,48 @@ def parse_element(doc, root, j):
                         text = doc.createTextNode('')
                         elem.appendChild(text)
                         root.appendChild(elem)
+                # a list of same tags
                 else:
                     for e in value:
                         elem = doc.createElement(key)
                         parse_element(doc, elem, e)
                         root.appendChild(elem)
             else:
+                # add attribute
                 if key in attr:
                     root.setAttribute(key, value)
+                # parse the content
                 elif key == 'text':
                     # gen_data
                     if value is None:
                         text = doc.createTextNode(gen_rand())
+                    # add test case space specifiation
+                    elif value == "space":
+                        cont = "Test Case Unit: %d * %d chars (%s)" % \
+                               (length, pow(unit, space[scale]), scale)
+                        text = doc.createTextNode(cont)
                     else:
                         text = doc.createTextNode(value)
                     root.appendChild(text)
+                # parse the normal element 
                 else:
                     elem = doc.createElement(key)
                     parse_element(doc, elem, value)
                     root.appendChild(elem)
+    # for text leaves
     elif isinstance(j, str) or isinstance(j, unicode):
         text = doc.createTextNode(j)
         root.appendChild(text)
+    # parse error
     else:
         raise Exception("bad type %s for %s" % (type(j), j))
 
 # parse json by module Document at xml.dom.minidom
 def parse_doc(html, j):
+    """
+        parse json by minidom.Document.
+        return doc of type xml Document.
+    """
     doc = Document()
     html = doc.createElement(html)
     if 'head' in j:
@@ -100,6 +126,9 @@ def parse_doc(html, j):
 
 # change json format to html
 def json2html():
+    """
+        return html content.
+    """
     assert data != None
     text = ''
     if 'html5' in data:
@@ -107,8 +136,9 @@ def json2html():
     if 'html' in data:
         doc = parse_doc('html', data['html'])
         text += doc.toprettyxml(encoding="utf-8", indent=" ")
-    print text
     index_html.write(text)
+    print text
+    print '======> Done!'
 
 # main function 
 def main():
