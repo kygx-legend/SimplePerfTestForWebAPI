@@ -5,21 +5,10 @@
  *Module: Perf_Test
  *Description:
  *    API Object Performance Test
- *    1. To generate test strings arrays and ints arrays with linear length.
- *    2. To test one function of API by loading generated parameters.
- *        There are two subtasks:
- *        a) Get the time of writing and reading to show the speed performance.
- *        b) Test and verify the integrity and accuracy.
- *        c) * More in depth, make the above visualization.
- *    3. Two main test tasks:
- *        one time for large data; more times for small data;
- *    4. Test object are `setProperty` and `getProperty`. \
- *        by one large string or one string array with more small strings.
  */
 
 
-// xwalk test goal example
-function XWalkTestGoal(goal){
+function APITestGoal(goal){
     this.goal = goal;
     this.setProperty = function setProperty(data){
         this.bubbleSort(data);
@@ -97,18 +86,18 @@ function get_data_unit(){
 }
 
 // pert test for different API
-function perf_test(xwalk_object, data){
+function perf_test(api_object, data){
     // object time to set up three kinds
     var time = new Object();
     time.start = new Date().getTime();
     
     // test setProperty
-    xwalk_object.setProperty(data);
+    api_object.setProperty(data);
 
     time.mid = new Date().getTime();
 
     // test getProperty
-    var newdata = xwalk_object.getProperty(data);
+    var newdata = api_object.getProperty(data);
 
     time.end = new Date().getTime();
 
@@ -201,8 +190,7 @@ function perf_test_main(){
     var number = parseInt(input.value);
     var times = new Array();// record the running time
 
-    // new one object of test goal of xwalk
-    var xwalk_test_object = new XWalkTestGoal('t');
+    var test_object = new APITestGoal('t');
 
     // test for linear
     // y = k * x + x for n cases 
@@ -214,7 +202,7 @@ function perf_test_main(){
             add += data;
         }
         for(var i=0; i<number; i++){
-            time = perf_test(xwalk_test_object, data);
+            time = perf_test(test_object, data);
             times.push(time);
             // link linearly
             data += add; 
@@ -230,7 +218,7 @@ function perf_test_main(){
             data += unit;
         }
         for(var i=0; i<number; i++){
-            time = perf_test(xwalk_test_object, data);
+            time = perf_test(test_object, data);
             times.push(time);
             // link non-linearly
             data += data; 
